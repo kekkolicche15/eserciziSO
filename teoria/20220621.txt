@@ -1,0 +1,9 @@
+c2:
+    Un servizio viene fornito in modalità client-server usando message passing asincrono.
+    Al fine di aumentare l'efficienza si decide di usare molti server e un processo dispatcher in grado di distribuire le
+    richieste agli N server. Quando un processo server è libero riceve dal dispatcher la prossima richiesta da elaborare:
+    codice di ogni client (tanti!): ....            server process[i], i = 0, ..., N-1:
+        asend(<getpid(), request>, dispatcher)              request = arecv(dispatcher)
+        result = arecv(dispatcher)                          result = compute(request)
+                                                            asend(<getpid(), result>, dispatcher)
+    Scrivere il processo dispatcher. (il dispatcher conosce i pid di tutti i server).

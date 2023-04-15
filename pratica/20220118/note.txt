@@ -1,0 +1,1 @@
+./pattern_subtree.py e' un hardlink a 20220118/pattern_subtree.py 

@@ -1,0 +1,29 @@
+c2:
+    Quella che segue vorrebbe essere l'implementazione di un semaforo unfair inizializzato a zero ma è
+    errata. Mostrare un caso nel quale il valore del semaforo (value) non venga correttamente mantenuto. Correggere il
+    codice usando il passaggio del testimone (passing le batôn).
+
+    class: wrongsem
+    int value = 0, count = 0
+    semaphore mutex init 1;
+    semaphore s init 0;
+
+    void wV():
+        mutex.P()
+        if value == 0 && count > 0:
+            s.V()
+        else:
+            value++
+        mutex.V()
+
+    void wP()
+        mutex.P()
+        if value == 0:
+            count++
+            mutex.V()
+            s.P()
+            mutex.P()
+            count--
+        else:
+            value--
+        mutex.V()
