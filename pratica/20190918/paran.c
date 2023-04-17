@@ -4,7 +4,6 @@
 #include <unistd.h>
 #include <string.h>
 
-
 int name2vect(char *src, char *dest[], char sep){
     int destMIdx = 0;
     int destIdx = 0;
@@ -25,11 +24,23 @@ int name2vect(char *src, char *dest[], char sep){
     dest[destMIdx] = NULL;
     return destMIdx;
 }
+void handler(int idx, int maxproc, int procnum, char* cmds[]){
+    pid_t cp;
+    for(int i=idx; i<procnum; i+=maxproc)
+        if(!(cp=fork())){
+            char *args[1024];
+            name2vect(cmds[i], args, ' ');
+            execvp(args[0], args);
+        }
+        else
+            waitpid(cp, NULL, WUNTRACED);
+    _exit(0);
+}
 int main(int argc, char*argv[]){
     if(argc<2)
         exit(EXIT_FAILURE);
     char *commands[1024];
-    int cmd_idx = -1, maxpar = atoi(argv[1]), curpar = 0;
+    int cmd_idx = -1, maxpar = atoi(argv[1]);
     for(int i=1; i<argc; i++)
         if(i>1&&strcmp(argv[i], "//")){
             strcat(commands[cmd_idx], argv[i]);
@@ -38,24 +49,11 @@ int main(int argc, char*argv[]){
         }else
             commands[++cmd_idx] = malloc(1024);
     cmd_idx++;
-    pid_t children[cmd_idx];
-    for(int j=0; j<cmd_idx/maxpar; j++){
-        for(int i=j*maxpar; i<(j+1)*maxpar; i++){
-            pid_t child = fork();
-            if(!child){
-                char *args[1024];
-                name2vect(commands[i], args, ' ');
-                execvp(args[0], args);
-                _exit(0);
-            }
-            else if(child>0)
-                children[i]=child;
-        }
-        for(int i=j*maxpar; i<(j+1)*maxpar; i++){
-            int status;
-            waitpid(children[i], &status, 0);
-            printf("PROCESS TERMINATED\n");
-        }
-    }
+    pid_t children[maxpar];
+    for(int i=0; i<maxpar; i++)
+        if(!(children[i]=fork()))
+            handler(i, maxpar, cmd_idx, commands);
+    for(int i=0; i<maxpar; i++)
+        waitpid(children[i], NULL, WUNTRACED);
     exit(EXIT_SUCCESS);
 }
