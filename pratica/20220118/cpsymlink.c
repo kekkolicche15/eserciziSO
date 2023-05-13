@@ -39,8 +39,8 @@ int main(int argc, char *argv[]){
             short buf;
             while(buf=getc(source))
                 putc(buf, dest);
-            fopen(source);
-            fopen(dest);
+            fclose(source);
+            fclose(dest);
         };
     }
     return 0;
