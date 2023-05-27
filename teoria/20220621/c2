@@ -1,0 +1,56 @@
+//nel dispatcher pid_t srvs[N]
+/*
+ * il dispatcher riceve una richiesta dal server e le inoltra al server che decide lui
+ * 
+ */
+#define N 2
+void dispatcher(){
+    pid_t srvs[N]; //srvs[i] (i=0,...,N-1) contiene pid server i
+    bool *busy = calloc(N, sizeof(bool));
+    msg_t msg;
+    pid_t client;
+    while(1){
+        msg, client = arecv(ANY);
+        int freeIdx = 0;
+        while(!busy[freeIdx])
+            freeIdx = freeIdx++%N;
+        busy[freeIdx] = true;
+        asend(srvs[freeIdx], msg);
+        msg = arecv(srvs[freeIdx]);
+        asend(msg, client);
+    }
+} //non va bene; un solo server viene utilizzato per volta
+
+#define N ...
+void dispatcher(){
+    pid_t srvs[N]; //srvs[i] (i=0,...,N-1) contiene pid server i
+    hashmap map = new hashmap;
+    queue q = new queue;
+    int occupied = 0;
+    msg_t msg;
+    pid_t src;
+    while(1){
+        msg, src = arecv(ANY);
+        if(srvs.contains(src)){ // allora e' un result
+            occupied--;
+            asend(msg, map.get(src));
+            map.remove(src);
+            int idx = srvs.indexof(src);
+            busy[idx] = false;
+        }
+        else{
+            q.enqueue(src, msg);
+            if(occupied!=N){
+                occupied++;
+                src, msg = q.dequeue();
+                for(int i=0; i<N; i++)
+                    if(!map.get(srvs[i])){
+                        map.add(srvs[i],src);
+                        asend(srvs[i], msg);
+                        busy[i] = true;
+                        break;
+                    }
+            }
+        }
+    }
+}

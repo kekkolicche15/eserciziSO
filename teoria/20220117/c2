@@ -1,0 +1,16 @@
+void ssend(msg_t msg, pid dest){
+    sasend(<msg, getpid()>, dest);
+}
+
+msg_t srecv(pid mit){
+    static hashmap received = new hashmap();
+    msg_t msg;
+    pid_t pid;
+    while(received.get(mit)==NULL){
+        <msg, pid> = sarecv(void); //potrebbe essere necessario esplicitare questa sezione
+        received.add(pid, msg);
+    }
+    msg = received.get(mit);
+    received.remove(mit);
+    return msg;    
+}

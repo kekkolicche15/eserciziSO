@@ -1,0 +1,44 @@
+#define MAX ...
+monitor multibuf{
+    T buf[MAX];
+    int occupati;
+    int indice_r;
+    int indice_w;
+
+    condition ok2add;
+    condition ok2get
+
+    multibuf(){
+        occupati = 0;
+        indice_r = 0;
+        indice_w = 0;
+        ok2add = new condition;
+        ok2get = new condition;
+    }
+
+    void entry add(int n, T objects[]){
+        while(occupati+n>MAX)
+            ok2add.wait();
+        for(int i=0; i<n; i++, indice_w=++indice_w%MAX)
+            buf[indice_w] = objects[i];
+        occupati+=n;
+        ok2get.signal();
+    }
+    void entry get(int n, T objects[]){
+        while(occupati-n<0)
+            ok2get.wait();
+        for(int i=0; i<n; i++, indice_r=++indice_r%MAX)
+            objects[i] = buf[indice_r];
+        occupati-=n;
+        ok2add.signal();
+    }
+}
+/*
+	si puo' avere una situazione di deadlock; finche' non viene rispettata la condizione
+  del primo processo in coda (relativamente a ok2add, ok2get) non si potranno mai avere altre richiesta.
+  Per bloccare il monitor basterebbe avere due processi: PA, PG
+  Se avvenissero le seguenti chiamate in un qualsiasi istante:
+  	PA chiama multibuf.add(MAX+1, ...);
+  	PG chiama multibuf.get(MAX+1, ...);
+  il monitor sarebbe bloccato e non si potrebbero piu' fare ne' operazioni di add, ne' operazioni di get.
+*/

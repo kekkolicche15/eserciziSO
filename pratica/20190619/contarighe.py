@@ -7,13 +7,13 @@ for cur, _, files in os.walk(path):
     for file in files:
         if file=="Makefile":
             with open(os.path.join(cur, file), 'r') as f:
-                flens[2][os.path.join(cur, file)] = sum([1 for _ in f])
+                flens[2][os.path.join(cur, file)] = len(f)
         elif file.split(".")[-1]=="h":
             with open(os.path.join(cur, file), 'r') as f:
-                flens[1][os.path.join(cur, file)] = sum([1 for _ in f])
+                flens[1][os.path.join(cur, file)] = len(f)
         elif file.split(".")[-1]=="c":
             with open(os.path.join(cur, file), 'r') as f:
-                flens[0][os.path.join(cur, file)] = sum([1 for _ in f])
+                flens[0][os.path.join(cur, file)] = len(f)
 for i in range(3):
     rows[i] = sum(flens[i].values())
 maxnamelen = max([len(key) for flen in flens for key,_ in flen.items()])

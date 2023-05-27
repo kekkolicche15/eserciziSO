@@ -1,0 +1,50 @@
+class: wrongsem
+    int value = 0, count = 0
+    semaphore mutex init 1;
+    semaphore s init 0;
+
+    void wV():
+        mutex.P()
+        if value == 0 && count > 0:
+            s.V()
+        else:
+            value++
+        mutex.V()
+
+    void wP()
+        mutex.P()
+        if value == 0:
+            count++
+            mutex.V()
+            s.P()
+            mutex.P()
+            count--
+        else:
+            value--
+        mutex.V()
+
+il problema e' nel rilascio della mutua esclusione (16)
+
+class: oksem
+    int value = 0, count = 0
+    semaphore mutex init 1;
+    semaphore s init 0;
+
+    void wV():
+        mutex.P()
+        if value == 0 && count > 0:
+            s.V()
+        else:
+            value++
+            mutex.V()
+        
+    void wP()
+        mutex.P()
+        if value == 0:
+            count++
+            mutex.V()
+            s.P()
+            count--
+        else:
+            value--
+        mutex.V()

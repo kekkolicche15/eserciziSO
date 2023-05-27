@@ -1,0 +1,44 @@
+//asend, arecv
+
+void snsend(msgtype msg, pid_t dest){
+    asend(<msg, getpid()>, dest);
+    arecv(dest);
+}
+msgtype snrecv(pid_t sender, int n){
+    //supponendo che bit di ANY = 1111...111
+    static list<pid, msgtype> l = new list();
+    msgtype msg;
+    pid_t rec
+    <msg, rec> = arecv(sender);
+    asend(NULL, rec);
+    l.append(<rec, msg>);
+    if(n==0){
+        for <item_p, item_m> in l.reverse()
+            if(sender&rec==sender) //se rec==sender||rec==ANY
+                return item_m;
+        do{
+            <msg, rec> = arecv(sender);
+            asend(NULL, rec);
+            l.append(<rec, msg>);
+        }while(sender&rec!=sender);
+        return msg;
+    }
+    else{
+        int count = 0;
+        msgtype item_m;
+        for <item_p, item_m> in l{
+            if(sender&rec==sender)
+                count++;
+            if(count==n)
+                return msg;
+        }
+        do{
+            <msg, rec> = arecv(sender);
+            asend(NULL, rec);
+            l.append(<rec, msg>);
+            if(sender&rec==sender)
+                count++;
+        }while(count<n);
+        return msg;
+    }
+}

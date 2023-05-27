@@ -1,0 +1,28 @@
+struct info{
+    int remaining;
+    condition c;
+}
+
+monitor delay{
+    List<s> l;
+
+    void delay(){
+        l = new list;
+    } 
+
+    boolean entry delay(unsigned int timeout){
+        struct info s;
+        s.remaining = timeout;
+        s.c = new condition;
+        l.append(s);
+        s.c.wait();
+    }
+    int count(void){
+        return len(l);
+    }
+    void tick(void){
+        for(s in l)
+            if(--s.timeout==0)
+                s.c.signal();
+    }
+}

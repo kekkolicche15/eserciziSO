@@ -1,0 +1,48 @@
+struct info{
+    int remaining;
+    condition c;
+    boolean cause_timeout;
+}
+
+monitor semtimeout{
+    unsigned int v;
+    queue<info> q;
+    semtimeout(unsigned int n){
+        v = n;
+        q = new queue;
+    }
+
+    void V(void){
+        if(!q.isEmpty())
+            q.dequeue().c.signal();
+        else
+            v++;
+    }
+    bool P(unsigned int timeout){ //timeout >=1
+        if(v==0&&timeout==0){
+            return true;
+        }
+        else if(v==0){
+            struct info s;
+            s.c = new condition;
+            s.remaining = timeout;
+            s.cause_timeout = false;
+            l.enqueue(s);
+            s.c.wait();
+            return s.cause_timeout;
+        }
+        else{
+            v--;
+            return false;
+        }
+    }
+    void tick(void){
+        for(s in q){
+            if(--remaining==0){
+                s.cause_timeout = true;
+                q.remove(s);
+                s.signal();
+            }
+        }
+    }
+}

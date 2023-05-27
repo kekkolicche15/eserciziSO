@@ -1,0 +1,4 @@
+a)  l'insieme delle pagine in memoria con m frame e' un sottoinsieme dell'insieme delle pagine in memoria con m+1 frame, quindi ci saranno meno pagefault
+b) 
+c)
+d) Gli SSD hanno un numero massimo di cicli di scrittura per cella. Se venisse aggiornato il tempo di ultimo accesso al file si andrebbe a ridurre la vita della cella del disco a stato solido, quindi e' stata disattivata.

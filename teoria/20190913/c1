@@ -1,0 +1,43 @@
+monitor mbuf{
+    int nelem;
+    int nget;
+    queue<type, int> q;
+    condition ok2add;
+    condition ok2get;
+    condition wait4gets;
+    mbuf(){
+        nelem = 0;
+        nget = 0;
+        q = new queue;
+        ok2add = new condition;
+        ok2get = new condition;
+        wait4gets = new condition;
+    }
+
+    entry void add(type data, int n){
+        if(nelem+1==MAXELEM)
+            ok2add.wait();
+        q.enqueue(data, n);
+        if(nelem++==0)
+            for(int i=0; i<n; i++)
+                ok2get.signal();
+    }
+    entry type get(void){
+        if(nelem==0)
+            ok2get.wait();
+        type data;
+        int req;
+        data, req = q.getfirst();
+        if(++nget==req){
+            for(int i=0; i<req-1; i++)
+                wait4gets.signal();
+            q.dequeue();
+            nelem--;
+            nget = 0;
+            ok2add.signal();
+        }
+        else
+            wait4gets.wait();
+        return data;
+    }
+}

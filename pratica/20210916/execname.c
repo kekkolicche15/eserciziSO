@@ -39,12 +39,15 @@ void handler(int fd, int wd){
         char *filepath = malloc(6+strlen(event->name));
         strcpy(filepath, "exec/");
         strcat(filepath, event->name);
+        FILE *outpt = fopen(filepath, "w");
         if(fork()==0){
             int fd[2];
             pipe(fd);
-            FILE *outpt = fopen(filepath, "w");
             dup2(fileno(outpt), STDOUT_FILENO);
             execvp(cmd[0], cmd);
+        }
+        else{
+            wait(NULL);
             fclose(outpt);
         }
     }

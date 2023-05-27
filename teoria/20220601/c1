@@ -1,0 +1,38 @@
+struct item{
+    condition c;
+    int rem;
+}
+
+monitor delay{
+    list dlys;
+    condition done;
+    int unlocked;
+
+    delay(){
+        dlys = new list<item>;
+        done = new condition;
+        unlocked = 0;
+    }
+
+    int entry wait_tick(int nticks){
+        t = new item;
+        t.c = new condition
+        t.rem = nticks
+        dlys.add(t);
+        t.c.wait();
+        done.wait();
+        return len(dlys)+unlocked;
+    }
+    void entry tick(void){
+        unlocked = 0;
+        for item in dlys{
+            if(--item.rem==0){
+                dlys.remove(item);
+                item.c.signal();
+                unlocked++;
+            }
+        }
+        for(int i=0; i<unlocked; i++)
+            done.signal();
+    }
+}

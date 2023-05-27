@@ -1,0 +1,10 @@
+{
+    "python.linting.banditPath": "REMOVEMEbandit",
+    "files.associations": {
+        "*.h": "c",
+        "*.txt": "plaintext",
+        "compare": "c",
+        "cstdint": "c",
+        "format": "c"
+    }
+}

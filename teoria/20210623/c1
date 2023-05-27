@@ -1,0 +1,24 @@
+#define NDELAY ...
+
+monitor delayvalue{
+    int inqueue;
+    int lastval;
+    queue cnds;
+
+    delayvalue(){
+        inqueue = 0;
+        cnds = new queue();
+    }
+
+    int entry delay(int value){
+        lastval = value;
+        condition c=new condition;
+        cnds.enqueue(c);
+        if(inqueue>=NDELAY)
+            conds.dequeue().signal();
+        else
+            inqueue++;
+        c.wait();
+        return lastval;
+    }
+}

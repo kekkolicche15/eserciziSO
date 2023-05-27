@@ -1,0 +1,39 @@
+monitor bss{
+
+    list of T buf; 
+
+    int n_get, n_put;
+    condition sync_get, sync_put;
+
+    bss(){
+        buf = new list;
+        n_get = n_put = 0;
+        sync_get = sync_put = new condition;
+    }
+
+    void entry put(T value){
+        buf.append(value);
+        if(n_get == 0){
+            n_put++;
+            sync_put.wait();
+            n_get = 0;
+        }
+        else
+            for(int i=0; i<n_get; i++)
+                sync_get.signal();
+            b
+    }
+
+    list of T get(void){
+        if(n_put>0){
+            for(int i=0; i>n_put; i--)
+                sync_put.signal();
+            n_put = 0;
+        }
+        if(buf.isempty()){
+            n_get++;       
+            sync_get.wait();
+        }
+        return buf;
+    }
+}

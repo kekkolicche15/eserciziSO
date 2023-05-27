@@ -1,0 +1,39 @@
+Lo scheduler RM è a priorità statica, preemptive e gestisce processi periodici (processi che si riattivano periodicamente, allo scadere di un periodo se ne attiva una nuova istanza). Sono processi che fanno solo calcolo. Al fine di questo esercizio il costo del context switch sia considerato nullo.
+Si considerino due sistemi.
+Sistema A: sono presenti 3 processi:
+    Processo    Periodo     Priorità    tempo di elaborazione
+    p1          15          massima     5
+    p2          20          media       5
+    p3          25          minima      6
+Sistema B: sono presenti 3 processi:
+    Processo    Periodo     Priorità    tempo di elaborazione
+    p1          8           massima     2
+    p2          16          media       4
+    p3          32          minima      16
+I processi del sistema A sono schedulabili con RM? (si  può costruire uno schedule di durata indefinita che 
+consenta di eseguire tutti i processi). E i processi del sistema B?
+
+
+mcm(25, 20, 15) = 300
+vediamo se in un ciclo di 300 istanti riusciamo a soddisfare tutte le richieste, quindi
+
+300 - 300/25*6 - 300/20*5 - 300/15*5 = 300-72-75-100 = 73 >=0, quindi e' possibile!! (alla cpu rimane anche del tempo in idle...)
+
+A
+    0000000000111111111122222222223333333333444444444455555555556666666666777777777788888888889
+    0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
+    11111          11111          11111          11111          11111          11111          11111
+              33333          3              333333
+                         IIII
+         22222          22222               x    22222          22222               22222               
+
+
+Per il sistema B necessitiamo che 32 -16 -2*4 -4*2 = 0 >= 0, quindi e' possibile!! (la cpu viene costantemente utilizzata)
+
+B
+    0000000000111111111122222222223333333333444444444455555555556666666666777777777788888888889
+    0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
+
+    11      11      11      11      11      11      11      11      11      11      11      11      
+      2222            2222            2222            2222            2222            2222           
+          33  333333      33  333333      33  333333      33

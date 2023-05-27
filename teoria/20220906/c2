@@ -1,0 +1,29 @@
+int sum = 0;
+int noproc = 0;
+sem p2stop(0);
+sem mutex(1);
+
+void sumstop(int v){
+    sem s(0);
+    mutex.P();
+    sum+=v;
+    noproc++;
+    q.enqueue(s);
+    mutex.V();
+    /*un processo potrebbe entrare qui, se entrasse sumgo si avrebbero questi effetti:
+    	sum sarebbe incrementato anche di v, quindi ci sarebbe il valore aggiornato, anche se questo processo non e' mai stato bloccato, 
+      tuttavia il valore di s di questo processo sarebbe incrementato di 1, quindi quando si farebbe la P() (istruzione successiva), il processo continuerebbe la sua esecuzione, come
+      se sumgo l'avesse sbloccato
+    */
+    p2stop.P();
+}
+int sumgo(void){
+    int s;
+    mutex.P();
+    s = sum;
+    sum = 0;
+    for(;noproc>0;noproc--)
+        p2stop.V();
+    mutex.V();
+    return s;
+}

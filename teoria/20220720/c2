@@ -1,0 +1,19 @@
+//asincrono; ho a disposizione asend(msg, dest), arecv(p)
+
+
+list l = ();
+
+void tsend(msg_t msg, pid_t dest){
+    asend(msg, dest);
+}
+msg_t trecv(void){
+    while(1){
+        msg_t m = arecv(ANY);
+        if l.contains(m){
+            l.delete(m)
+            return m;
+        }
+        else
+            l.add(m)
+    }
+}

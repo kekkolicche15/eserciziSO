@@ -1,0 +1,18 @@
+monitor semdata<datatype>{
+    stack<datatype> s;
+    condition c;
+
+    semdata(){
+        s = new stack();
+    }
+
+    datatype entry dP(void){
+        if(s.isEmpty())
+            c.wait();
+        return s.pop();
+    }
+    void entry dV(datatype data){
+        s.push(data);
+        c.signal();
+    }
+}

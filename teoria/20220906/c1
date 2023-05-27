@@ -1,0 +1,40 @@
+int size = sizeof(int)*8;
+
+monitor bitcond{
+    int value, latest; //32 bit
+    bool first;
+    condition bit[size];
+
+    bitcond(){
+        value = 0;
+        latest = 0;
+        current = 0;
+        first = true;
+    }
+
+    void entry set(int bit2set){
+        for(int i=0; i<size; i++)
+            if((!value&(1<<i))&&((bit2set&(1<<i)==1))) //se c'e' qualche bit che da spento deve passare ad acceso...
+                bit[i].signal();
+        value |= bit2set;
+    }
+    void entry unset(int bit2unset){
+        value = value & ~bit2unset;
+    }
+    void entry statuswait(int bit2wait){
+        if(!first)
+            fifo.wait();
+        first = false;
+        for(int i=0; i<size; i++){
+            if((bit2wait&(1<<i)==1)&&(value&(1<<i)==0)){ //se devo aspettare un bit spento...
+                latest = value;
+                bit[i].wait();
+                //devo controllare i bit precedenti a i; se ce n'e' qualcuno che sto cercando spento devo ripartire da li'
+                for(int j=0; j<i; j++)
+                    if(latest&(1<<j)>value&(1<<j) && bit2wait&(1<<j)==1) //se un bit !che aspettavo! nell'intervallo [0,i[ e' passato dall'essere acceso all'essere spento...
+                        i = j; //ricomincio il controllo da capo
+            }
+        }
+        fifo.signal();
+    }
+}

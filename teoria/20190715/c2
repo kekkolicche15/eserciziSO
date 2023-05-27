@@ -1,0 +1,5 @@
+serverproc risponde al processo che gli manda un messaggio con l'esatto messaggio
+se viene mandato asend((getpid(), "ciao", ""))
+l'host ricevera' "ciao".
+
+La concorrenza tra piu' processi non sarebbe in problema in quanto non ci sono variabili condivise.

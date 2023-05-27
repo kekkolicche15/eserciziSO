@@ -1,0 +1,32 @@
+//https://github.com/csunibo/sistemi-operativi/blob/main/prove/scritto/scritto-2022-06-01-soluzione.md
+// Il tipo di un identificatore incrementale di messaggio: a parità di mittente
+// e destinatario, questi identificatori sono univoci e permettono quindi di
+// ricostruire l'ordine FIFO.
+typedef int mid_t;
+
+void asend(msg_t msg, pid_t dest) {
+  // A ogni destinatario, associa il prossimo mid_t da usare.
+  static auto ids = new Map<pid_t, mid_t>();
+  if (!ids.containsKey(dest)) // nuovo destinatario: partiamo da mid_t 0
+    ids[dest] = 0;
+  msg.prepend_token(ids[dest]++); // prima uso ids[dest], poi lo aggiorno
+  nfasend(msg, sender);
+}
+
+msg_t arecv(pid_t sender) {
+  // A ogni mittente, associa una coppia contenente:
+  // 1. una coda con priorità dei messaggi. La relazione d'ordine implicita su
+  //    essi definita considera il token più significativo (di fatto, il mid_t);
+  // 2. il mid_t del prossimo messaggio di quel mittente.
+  static auto queues = new Map<pid_t, Pair<PriorityQueue<msg_t>, mid_t>>();
+  if (!queues.containsKey(sender)) // nuovo mittente: coda vuota e mid_t 0
+    queues[sender] =
+      new Pair<PriorityQueue<msg_t>, mid_t>(new PriorityQueue<msg_t>(), 0);
+  // attendo di avere il messaggio con mid_t desiderato
+  while (queues[sender].first.isEmpty() ||
+         queues[sender].first.minKey() > queues[sender].second)
+    queue[sender].add(nfarecv(sender));
+  auto msg = queues[sender].first.removeMin(); // prendo il messaggio
+  ++queues[sender].second; // prossima volta, messaggio con mid_t successivo
+  return msg.tail(); // scarto il mid_t (informazione inutile per l'utente)
+}

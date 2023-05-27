@@ -1,0 +1,87 @@
+monitor pairbuf{
+    T data;
+    int nget, nput;
+    condition ok2put, ok2get;
+
+    pairbuf(){
+        nget = nput = 0;
+        ok2put = new condition;
+        ok2get = new condition;
+    }
+
+    void entry put(T x){
+        nput++;
+        if(nput!=nget)
+            ok2put.wait();
+        nput--;
+        data = x;
+        ok2get.signal();
+    }
+    T entry get(){
+        nget++;
+        if(nput!=nget)
+            ok2get.wait();
+        nget--;
+        ok2put.signal();
+        return data;
+    }
+}
+
+put1 -> si blocca a wait
+put2 -> si blocca a wait
+get1 -> si blocca a wait
+get2 -> non fa la wait;
+    sblocca p2 con ok2put;
+    p2 scrive il dato e sblocca g1
+    g1 sblocca p1 che sovrascrive il dato. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+monitor pairbuf{
+    Queue<T> q;
+    int nget, nput;
+    condition ok2put, ok2get;
+
+    pairbuf(){
+        q = new queue;
+        nget = nput = 0;
+        ok2put = new condition;
+        ok2get = new condition;
+    }
+
+    void entry put(T x){
+        nput++;
+        if(nput!=nget)
+            ok2put.wait();
+        nput--;
+        data.enqueue(x);
+        ok2get.signal();
+    }
+    T entry get(){
+        nget++;
+        if(nput!=nget)
+            ok2get.wait();
+        nget--;
+        ok2put.signal();
+        return q.dequeue(x);
+    }
+}
+
+put1 -> si blocca a wait
+put2 -> si blocca a wait
+get1 -> si blocca a wait
+get2 -> non fa la wait;
+    sblocca p2 con ok2put;
+    p2 scrive il dato e sblocca g1
+    g1 sblocca p1 che sovrascrive il dato. 

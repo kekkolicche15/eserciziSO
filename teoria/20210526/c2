@@ -1,0 +1,43 @@
+//msg = arecv(mitt), asend(msg, dest)
+//arecv(mitt) mi blocca finche' il mittente non mi ha spedito qualcosa, quindi...
+
+//versione non bufferizzata
+void sasend(msg_t message, pid_t destination){
+    asend((message, getpid()), destination);
+}
+
+msg_t sarecv(set<pid_t> senders){
+    msg_t rec;
+    pid_t send;
+    do{
+        (rec, send) = sarecv(ANY);
+    }while(!senders.isEmpty()&&!send in senders);
+    return rec;
+}
+
+
+//versione bufferizzata
+void sasend(msg_t message, pid_t destination){
+    asend((message, getpid()), destination);
+}
+msg_t sarecv(set<pid_t> senders){
+    static hashmap<pid_t, msg_t> h = new hashmap;
+    msg_t rec;
+    if(senders.isEmpty()){
+        pid_t first = h.keys()[1];
+        rec = h.get(first);
+        h.remove(first);
+        return rec;
+    }
+    for sender in senders:
+        if((rec=h.get(sender))!=NULL){
+            h.remove(sender);
+            return rec;
+        }
+    for(;;){
+        (rec, send) = sarecv(ANY);
+        if(senders.isEmpty() || send in senders)
+            return rec;
+        h.set(rec, send);
+    }
+}

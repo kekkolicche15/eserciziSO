@@ -1,0 +1,37 @@
+monitor torneo{
+    hashmap<hashmap<int>> forme;
+    hashmap<hashmap<int>> avversari;
+    hashmap<hashmap<condition>> condizioni;
+
+    torneo(){
+        forme = new hashmap();
+        avversari = new hashmap();
+        condizioni = new hashmap();
+    }
+    bool entry gioca(int squadra, int turno, int forma){
+        if(forme.get(turno) == NULL){
+            forme.get(turno) = new hashmap();
+            avversari.get(turno) = new hashmap();
+            condizizioni.get(turno) = new hashmap();
+        } 
+        forme.get(turno).add(squadra, forma);
+        for(int i=squadra/pow(2, turno), cnt=0; cnt<pow(2, turno); i++, cnt++)
+            if(forme.get(turno).get(i)!=NULL){
+                avversari.get(turno).add(i, squadra);
+                int forma_avv = forme.get(turno).get(i);
+                if(forma==forma_avv){
+                    if(random_val_between(0, 1)==0) //vinco, io, a random
+                        forma.get(turno).set(i) = -infty;
+                    else //vince avversario
+                        forma.get(turno).set(i) = infty;
+                }
+                condizioni.get(turno).get(i).signal();
+                return forma>forma_avv;
+            }
+        //non ho trovato nessun avversario; sono la prima squadra 
+        condizioni.get(turno).add(squadra, new condition());
+        condizioni.get(turno).get(squadra).wait();
+        return forma>forme.get(turno).get(avversari.get(turno).get(squadra));
+    }
+}
+

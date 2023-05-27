@@ -28,7 +28,7 @@ int main(int argc, char *argv[]){
     DIR *dr = opendir(argv[1]);
     struct dirent *de;
     char real[100];
-    while(de=readdir(dr)){
+    while((de=readdir(dr))){
         if(de->d_type==10){
             char fullpath[strlen(de->d_name)+strlen(argv[1])+2];
             snprintf(fullpath, sizeof fullpath, "%s/%s", argv[1], de->d_name);
@@ -37,7 +37,7 @@ int main(int argc, char *argv[]){
             FILE *source = fopen(real, "r");
             FILE *dest = fopen(fullpath, "w+");
             short buf;
-            while(buf=getc(source))
+            while((buf=getc(source))!=EOF)
                 putc(buf, dest);
             fclose(source);
             fclose(dest);

@@ -1,0 +1,4 @@
+a) il compilatore di C e' scritto in C grazie ad un processo chiamato bootstrapping. Inizialmente e' stato scritto un compilatore per C scritto in un altro linguaggio, dopodiche' e' stato scritto un compilatore per C scritto in C e compilato con il primo compilatore.
+b) in un filesystem di tipo unix si hanno gli inode, strutture dati che contengono dati sul file a cui si riferiscono. In un inode ci sono 12 puntatori diretti a blocchi di dati del file, un blocco di riferimenti a riferimenti sul disco, un blocco di riferimenti di riferimenti (riferimenti di secondo livello) ed un blocco di riferimenti di terzo livello. Quindi la dimensione massima di un file e' blocksize(12+256+256*256+256*256*256) (un blocco indice puo' contenere 256 riferimenti (secondo wikipedia))
+c) 
+d) le syscall vengono eseguite in kernel mode, le funzioni di libreria in user mode

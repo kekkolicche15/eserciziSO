@@ -1,0 +1,26 @@
+monitor collocamento{
+    hashmap lavori;
+    condition attesa_lavoro;
+    condition aggiunta_skill;
+
+    collocamento(){
+        lavori = new hashmap;
+    }
+
+    void entry cercolavoro(char *nome, char *skill){
+        if(lavori.get(skill)==NULL)
+            lavori.add(skill, new list);
+        lavori.get(skill).append(nome);
+        aggiunta_skill.signal();
+        while(lavori.get(skill).contains(nome))
+            attesa_lavoro.wait();
+    }
+    char* entry assumo(char *skill){
+        while(lavori.get(skill)==NULL || lavori.get(skill).length==0)
+            aggiunta_skill.wait();
+        char *assunto = lavori.get(skill).get(0); //primo elemento nella lista con skill cercata
+        lavori.get(skill).remove(0);
+        attesa_lavoro.signal();
+        return assunto;
+    }
+}

@@ -1,0 +1,46 @@
+monitor porto{
+    bool nave_in_porto;
+    int cap_residua_nave;
+
+    condition molo_libero;
+    condition nave_piena;
+    condition aspetta_nave;
+
+		bool camion_presente;
+    condition parcheggio_libero;
+    
+    porto(){
+        nave_in_porto = false;
+        camion_parcheggiato = false;
+    }
+
+    void entry attracca(int cap){
+        if(nave_in_porto)
+            molo_libero.wait();
+        nave_in_porto = true;
+        cap_residua_nave = cap;
+        aspetta_nave.signal();
+    }
+    void entry salpa(void){
+        nave_piena.wait();
+        nave_in_porto = false;
+        molo_libero.signal();
+    }
+    void entry scarica(int cap){ //locking necessario a causa della wait a rigo 40
+        if(camion_presente)
+        	parcheggio_libero.wait();
+        camion_presente = true;
+        int scaricati;
+        do{ 
+            scaricati = cap<cap_residua_nave?cap:cap_residua_nave;
+            cap = cap - scaricati;
+            cap_residua_nave = cap_residua_nave - scaricati;
+            if(!cap_residua_nave){
+                nave_piena.signal();
+                aspetta_nave.wait();
+            }
+        }while(cap);
+        camion_presente = false;
+        parcheggio_libero.signal();
+    }
+}
