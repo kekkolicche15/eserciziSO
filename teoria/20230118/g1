@@ -1,0 +1,17 @@
+Siano dati due processi in esecuzione in un sistema monoprocessore e gestiti da uno scheduler round-
+robin.
+I due processi sono gli unici nel sistema e usano la stessa unità di I/O gestita in modo FIFO.
+PA: 1ms CPU, 2ms I/O, 1ms CPU, 8ms I/O, 1ms CPU
+PB: 2ms CPU, 1ms I/O, 8ms CPU, 1ms I/O, 1ms CPU
+Quale è il tempo minimo e quale il tempo massimo impiegato dal sistema per completare l’elaborazione dei due
+processi al variare della lunghezza del quanto di tempo e della posizione iniziale dei processi nella ready queue (PA
+precede PB o viceversa)
+
+
+Se quanto di tempo = 1ms
+    Se PA prima di PB
+    CPU ABBABBBBBBBBAB          => 14ms
+    IO   AABAAAAAAAAB
+    Se PB prima di PA
+    CPU ABB
+    IO   AAB

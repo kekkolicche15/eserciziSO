@@ -1,0 +1,38 @@
+monitor redblack{
+    int last=-1;
+    int valno[2];
+    double valsum[2];
+    condition ok2go[2];
+
+
+    redblack(){
+        last=-1;
+        valno = [0, 0];
+        valsum = [0, 0];
+        ok2go = [new condition, new condition];
+    }
+
+    double rb(int color, double value){
+        if(color == last)
+            ok2go[color].wait();
+        valno[color]++;
+        valsum[color]+=value;
+        double res = valsum[color]/valno[color];
+        last = color;
+        ok2go[1-color].signal();
+        return res;
+
+    }
+        //non ho capito la traccia, se bisogna ritornare la media di tutti i processi sbloccati fin'ora come sta scritto sopra va bene, altrimenti, se bisogna includere anche i processi che verranno sbloccati a catena....
+
+    double rb(int color, double value){
+        if(color == last)
+            ok2go[color].wait();
+        valno[color]++;
+        valsum[color]+=value;
+        last = color;
+        ok2go[1-color].signal();
+        return  valsum[color]/valno[color];
+
+    }
+}

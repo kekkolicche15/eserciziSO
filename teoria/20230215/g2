@@ -1,0 +1,12 @@
+a) Quali operazioni compie un device driver per iniziare una operazione di I/O? Come viene rilevato il completamento dell'operazione di I/O?
+    Il device driver istruisce il controller del dispositivo desiderato con operazioni di seek, read, write. Il controller fa attuare queste operazioni al device e quando questo termina manda un interrupt alla(e) CPU, che lo prendera(nno) in carico mandando un ack. 
+
+b) In un sistema a memoria virtuale un interrupt di tipo TLB-miss indica sempre la mancanza di una pagina in memoria (page miss)?
+    No. La TLB (Translation Lookaside buffer) e' una cache nella MMU utilizzata per evitare di dover accedere ogni volta alla tabella delle pagine presente in memoria (raddoppierebbero gli accessi in memoria altrimenti), quindi la pagina richiesta puo' stare in memoria centrale, ma perche' non la si accede da un po' di tempo la sua voce nella tlb e' stata sovrascritta.
+
+c) Quali sono le metodologie che si possono utilizzare per minimizzare i rischi di attacco tramite worm?
+    Aggiornare frequentemente i software per evitare falle di sicurezza; configurare in maniera adeguata i firewall; confgurare adeguatamente il sistema, ad esempio, nascondendo gli utenti del sistema. Utilizzare preferibilmente software open source cosi' da poter controllare che il codice da eseguire non abbia falle(non lo so sto schizopostando da 2 righe almeno) 
+
+d) Confrontare l'allocazione concatenata e l'allocazione indicizzata nei file system. Quali sono i pro e i contro dei due metodi?
+    Nell'allocazione concatenata la dimensione massima dei file e' limitata dalla dimensione massima della partizione, mentre con l'allocazione indicizzata questo limite e' dato dal numero di blocchi che posso puntare, per questo vengono usati blocchi puntatori indiretti (puntatori a blocchi che contengono altri puntatori)
+    Inoltre, nell'allocazione concatenata per raggiungere una sezione di un file bisogna seguire tutti i collegamenti, quindi per ogni file ci fosse solo il puntatore all'inizio del file, per arrivare alla fine dovrei scandirlo tutto, non ideale nel caso di file di grandi dimensioni. Con allocazione indicizzata invece e' possibile arrivare in una qualsiasi parte del file in tempo molto minore.

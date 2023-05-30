@@ -5,6 +5,7 @@
         "*.txt": "plaintext",
         "compare": "c",
         "cstdint": "c",
-        "format": "c"
+        "format": "c",
+        "system_error": "c"
     }
 }

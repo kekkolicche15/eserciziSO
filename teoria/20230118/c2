@@ -1,0 +1,27 @@
+Facendo uso di semafori scrivere un funzione wait4 che faccia proseguire i processi a blocchi di quattro: il
+primo processo che chiama la wait4 si deve fermare, così come il secondo e il terzo. Il quarto processo deve far
+proseguire tutti e quattro i processi. In uguale modo l'ottavo processo che chiama wait4 risveglierà anche il quinto, il
+sesto e il settimo.
+SI chiede:
+* che l'implementazione non faccia uso di code o di altre strutture dati ma solamente di contatori (e ovviamente
+semafori)
+* che la soluzione faccia uso del passaggio del testimone per garantire che vengano riattivati i processi corretti e non
+altri.
+
+
+void wait4(){
+    static int n=0;
+    static semaphore s(0);
+    static semaphore mutex(1);
+
+    mutex.p();
+    if(++n==4){
+        for(int i=0; i<3; i++)
+            s.v();
+        mutex.v();
+    }
+    else{
+        mutex.v();
+        s.p();
+    }
+}

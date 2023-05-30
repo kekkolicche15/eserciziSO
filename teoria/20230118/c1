@@ -1,0 +1,25 @@
+monitor synmsg{
+    void *addr;
+    int n;
+    condition ok2send;
+    condition ok2recv;
+
+    synmsg(){
+        n = 0;
+        ok2send = new condition;
+        ok2recv = new condition;
+    }
+
+    procedure entry void send(msg_t *msg){
+        if(--n!=0)
+            ok2send.wait();
+        addr=msg;
+        ok2recv.signal();
+    }
+    procedure entry void recv(msg_t *msg){
+        if(++n!=0)
+            ok2recv.wait();
+        ok2send.signal();
+        copymsg(addr, dest);
+    }
+}

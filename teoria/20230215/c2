@@ -1,0 +1,38 @@
+void casend(pid_t dest, T msg){
+    asend(dest, (getpid(), msg));
+    asend(server_pid, (0, getpid(), 0));
+}
+T carecv(pid_t sender){
+    T msg;
+    pid_t p;
+    (msg, p) = arecv(sender);
+    asend(server_pid, (1, p, 0));
+}
+int cacount(pid_t sender){
+    asend(server_pid, (2, getpid(), sender));
+    return arecv(server_pid);
+}
+
+
+//processo server
+void handler(){
+    hashmap<pid_t, int> m;
+    int v;
+    pid_t p1, p2;
+    while(1){
+        (v, p1, p2) = arecv(ANY);
+        if(v==0){
+            if(m.get(p1)==NULL)
+                m.add(p1, 1);
+            else
+                m.set(p1, m.get(p1)+1);
+        }
+        else if(v==1){
+            m.set(p1, m.get(p1)-1);
+        }
+        else if(v==2){
+            asend(p1, m.get(p2)==NULL?0:m.get(p2));
+        }
+    }
+}
+

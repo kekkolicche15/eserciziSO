@@ -1,25 +1,4 @@
 //nel dispatcher pid_t srvs[N]
-/*
- * il dispatcher riceve una richiesta dal server e le inoltra al server che decide lui
- * 
- */
-#define N 2
-void dispatcher(){
-    pid_t srvs[N]; //srvs[i] (i=0,...,N-1) contiene pid server i
-    bool *busy = calloc(N, sizeof(bool));
-    msg_t msg;
-    pid_t client;
-    while(1){
-        msg, client = arecv(ANY);
-        int freeIdx = 0;
-        while(!busy[freeIdx])
-            freeIdx = freeIdx++%N;
-        busy[freeIdx] = true;
-        asend(srvs[freeIdx], msg);
-        msg = arecv(srvs[freeIdx]);
-        asend(msg, client);
-    }
-} //non va bene; un solo server viene utilizzato per volta
 
 #define N ...
 void dispatcher(){
